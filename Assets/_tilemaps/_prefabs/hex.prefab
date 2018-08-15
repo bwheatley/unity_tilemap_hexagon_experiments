@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4663972694889616}
+  - component: {fileID: 114565304979322722}
   m_Layer: 0
   m_Name: hex
   m_TagString: Untagged
@@ -112,3 +113,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1697911083835052}
   m_Mesh: {fileID: 4300000, guid: 0165e30fd235a054fb3347b8eaf02062, type: 3}
+--- !u!114 &114565304979322722
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1556178951739564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a45c11dd20c6ba448351a171d9ed487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HexMap: {fileID: 0}
