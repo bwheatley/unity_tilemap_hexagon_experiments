@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CameraController;
+using CameraController.Util;
 
 public class HexMap : MonoBehaviour {
 
@@ -29,9 +31,7 @@ public class HexMap : MonoBehaviour {
                 var _hexcomp = hexGO.GetComponent<HexComponent>();
                 _hexcomp.Hex = h;
                 _hexcomp.HexMap = this;
-                    
-
-
+                
                 MeshRenderer mr = hexGO.GetComponentInChildren<MeshRenderer>();
                 mr.material = HexMaterials[Random.Range(0, HexMaterials.Length)];
 
