@@ -10,8 +10,9 @@ using UnityEngine;
 /// </summary>
 public class Hex {
 
-    public Hex(int q, int r)
-    {
+    public Hex(HexMap hexMap, int q, int r) {
+        this.hexMap = hexMap;
+
         this.Q = q;
         this.R = r;
         this.S = -(q + r);
@@ -25,12 +26,15 @@ public class Hex {
     public readonly int R;  //Row
     public readonly int S;  //Sum
 
+    // Data for map generation and flavor
+    public float Elevation;
+    public float Moisture;
+
     static private readonly float WIDTH_MULTIPLIER = Mathf.Sqrt(3) / 2;
     float radius = 1f;
     private float vertMod = 0.75f;
 
-    private bool allowWrapEastWest = true;
-    //private bool allowWrapNorthSouth = false;
+    private HexMap hexMap;
 
     /// <summary>
     /// This returns the world-space position of this hex
@@ -43,6 +47,22 @@ public class Hex {
         return new Vector3(horiz * (this.Q + this.R/2f)  ,
             vert * this.R,
             0);
+    }
+
+    public static float Distance(Hex a, Hex b) {
+
+        int dQ = Mathf.Abs(a.Q - b.Q);
+        if (a.hexMap.AllowWrapEastWest) {
+            if (dQ > a.hexMap.numColumns / 2) {
+                dQ = a.hexMap.numColumns - dQ;
+            }
+        }
+
+        return Mathf.Max(
+            dQ,
+            Mathf.Abs(a.R - b.R),
+            Mathf.Abs(a.S - b.S)
+            );
     }
 
     public float HexHeight() {
@@ -67,7 +87,7 @@ public class Hex {
 
         Vector3 position = Position();
 
-        if (allowWrapEastWest) {
+        if (hexMap.AllowWrapEastWest) {
             float howManyWidthsFromCamera = (position.x - cameraPosition.x) / mapWidth;
 
             //We want Howmanywidths from camera to be from -0.5 to 0.5

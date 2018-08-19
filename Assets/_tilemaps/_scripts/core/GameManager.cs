@@ -25,13 +25,20 @@ public class GameManager : MonoBehaviour {
     [Tooltip("7 Debug - Everythign!")]
     public const int LogLevel_Debug = 7;
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public static GameManager instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            Debug.Log("Creating a new version of GameManager.");
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.Log("GameManager already exists.");
+            Destroy(this.gameObject);
+            return;
+        }
+    }
 }
