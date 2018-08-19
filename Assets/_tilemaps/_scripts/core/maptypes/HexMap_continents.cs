@@ -9,7 +9,7 @@ public class HexMap_continents : HexMap {
         //Generate all the hexes we need
         base.GenerateMap();
 
-        int numContinents = 10;
+        int numContinents = 5;
         int continentSpacing = numColumns / numContinents;
 
         for (int c = 0; c < numContinents; c++) {
@@ -49,7 +49,7 @@ public class HexMap_continents : HexMap {
         Vector2 noiseOffset = new Vector2(Random.Range(0,1f), Random.Range(0, 1f));
 
         //Test seeding
-        //Random.InitState(0);
+        Random.InitState(0);
 
         for (int column = 0; column < numColumns; column++) {
             for (int row = 0; row < numRows; row++) {
