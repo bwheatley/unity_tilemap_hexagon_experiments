@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using CameraController;
@@ -31,15 +32,15 @@ public class HexMap : MonoBehaviour {
     public Material MatDesert;
 
     //Tiles with height above is a tile type whatever
-    public readonly float HeightMountain = 0.85f;
-    public readonly float HeightHill = 0.60f;
-    public readonly float HeightFlat = 0.0f;
+    [NonSerialized] public float HeightMountain = 0.85f;
+    [NonSerialized] public float HeightHill = 0.60f;
+    [NonSerialized] public float HeightFlat = 0.0f;
 
     //Moisture
-    public readonly float MoistureJungle = 0.66f;
-    public readonly float MoistureForest = 0.33f;
-    public readonly float MoistureGrasslands = 0f;
-    public readonly float MoisturePlains = -0.5f;
+    [NonSerialized] public float MoistureJungle = 0.66f;
+    [NonSerialized] public float MoistureForest = 0.33f;
+    [NonSerialized] public float MoistureGrasslands = 0f;
+    [NonSerialized] public float MoisturePlains = -0.5f;
 
     private Hex[,] hexes;
     Dictionary<Hex, GameObject> hexToGameObjectMap;
