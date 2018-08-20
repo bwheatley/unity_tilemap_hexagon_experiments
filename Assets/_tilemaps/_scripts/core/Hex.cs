@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -11,11 +12,12 @@ using UnityEngine;
 public class Hex {
 
     public Hex(HexMap hexMap, int q, int r) {
-        this.hexMap = hexMap;
+        this.HexMap = hexMap;
 
         this.Q = q;
         this.R = r;
         this.S = -(q + r);
+
     }
 
 
@@ -32,9 +34,32 @@ public class Hex {
 
     static private readonly float WIDTH_MULTIPLIER = Mathf.Sqrt(3) / 2;
     float radius = 1f;
+
+    private HashSet<Unit> units;
+
     private float vertMod = 0.75f;
 
-    private HexMap hexMap;
+    public readonly HexMap HexMap;
+
+
+    public void AddUnit(Unit unit) {
+        if (units == null) {
+            units = new HashSet<Unit>();
+        }
+
+        units.Add(unit);
+    }
+
+    public void RemoveUnit(Unit unit) {
+
+        if (unit != null && units != null) {
+            units.Remove(unit);
+        }
+    }
+
+    public Unit[] Units() {
+        return units.ToArray();
+    }
 
     /// <summary>
     /// This returns the world-space position of this hex
@@ -52,9 +77,9 @@ public class Hex {
     public static float Distance(Hex a, Hex b) {
 
         int dQ = Mathf.Abs(a.Q - b.Q);
-        if (a.hexMap.AllowWrapEastWest) {
-            if (dQ > a.hexMap.numColumns / 2) {
-                dQ = a.hexMap.numColumns - dQ;
+        if (a.HexMap.AllowWrapEastWest) {
+            if (dQ > a.HexMap.numColumns / 2) {
+                dQ = a.HexMap.numColumns - dQ;
             }
         }
 
@@ -81,13 +106,17 @@ public class Hex {
         return HexWidth();
     }
 
+    public Vector3 PositionFromCamera() {
+        return HexMap.GetHexPosition(this);
+    }
+
     public Vector3 PositionFromCamera(Vector3 cameraPosition, float numRows, float numColumns) {
         //float mapHeight = numRows * HexVerticalSpacing();
         float mapWidth = numColumns * HexHorizontalSpacing();
 
         Vector3 position = Position();
 
-        if (hexMap.AllowWrapEastWest) {
+        if (HexMap.AllowWrapEastWest) {
             float howManyWidthsFromCamera = (position.x - cameraPosition.x) / mapWidth;
 
             //We want Howmanywidths from camera to be from -0.5 to 0.5

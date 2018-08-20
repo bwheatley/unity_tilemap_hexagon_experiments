@@ -225,7 +225,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: -999
   far clip plane: 999.88
   field of view: 60
   orthographic: 1
@@ -283,7 +283,7 @@ MonoBehaviour:
   mouseWheelDisabled: 0
   scroll_fast_multiplier: 4
   _Cam: {fileID: 155264366}
-  MouseCameraControl: 1
+  MouseCameraControl: 0
   isCameraLocked: 0
   topdown: 0
 --- !u!114 &155264371
@@ -328,13 +328,14 @@ MonoBehaviour:
   HexPrefab: {fileID: 1556178951739564, guid: edea9aa358532f845a67e02552de680c, type: 2}
   MeshWater: {fileID: 4300000, guid: 42a055de1eafb1848a831fa408a32ecf, type: 3}
   MeshFlat: {fileID: 4300000, guid: 42a055de1eafb1848a831fa408a32ecf, type: 3}
-  MeshHill: {fileID: 4300002, guid: c19cb50628dd5bd488e402028e153feb, type: 3}
+  MeshHill: {fileID: 4300000, guid: 42a055de1eafb1848a831fa408a32ecf, type: 3}
   MeshGrassland: {fileID: 4300000, guid: 42a055de1eafb1848a831fa408a32ecf, type: 3}
   MeshMountain: {fileID: 4300002, guid: 1da61bdbe40688d4288b4bb93e046669, type: 3}
   ForestPrefab: {fileID: 1814731884119024, guid: 752ba6b1d820e304685caa68f7eae9ac,
     type: 2}
   JunglePrefab: {fileID: 1814731884119024, guid: 1815868a6bb295a40a0c80a0b2c84a26,
     type: 2}
+  HillPrefab: {fileID: 1814731884119024, guid: fb526da1df31e7140ac0508e149332ef, type: 2}
   MatOcean: {fileID: 2100000, guid: 5ce075dfe5d8e334f8fe1e6176420d8b, type: 2}
   MatMountain: {fileID: 2100000, guid: 547749a5ecbcea24fa76be12881a28e5, type: 2}
   MatPlain: {fileID: 2100000, guid: e5c3ade9fb1ea88449ae14a097c98aab, type: 2}
@@ -363,6 +364,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1220858578}
+  - component: {fileID: 1220858579}
+  - component: {fileID: 1220858580}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -383,3 +386,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1220858579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1220858577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1e54eb70b3099e4caa4947625028287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debug: 1
+  LogLevel: 0
+  playerUnit: {fileID: 1812754064078244, guid: 3f6790b5bccf42e45ae33c28b2a5ab60, type: 2}
+  playerStartPos: {x: 36, y: 10}
+--- !u!114 &1220858580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1220858577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ac88390f92b67479f7e593fb5b77cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MouseCameraControl: 1

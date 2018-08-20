@@ -9,7 +9,7 @@ public class HexMap_continents : HexMap {
         //Generate all the hexes we need
         base.GenerateMap();
 
-        int numContinents = 5;
+        int numContinents = 4;
         int continentSpacing = numColumns / numContinents;
 
         for (int c = 0; c < numContinents; c++) {

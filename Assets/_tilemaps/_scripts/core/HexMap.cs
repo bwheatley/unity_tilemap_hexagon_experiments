@@ -18,6 +18,7 @@ public class HexMap : MonoBehaviour {
 
     public GameObject ForestPrefab;
     public GameObject JunglePrefab;
+    public GameObject HillPrefab;
 
     // readonly will keep this from showing up in the editor and being confused when you can't figure out
     // why maps not working like you want
@@ -45,12 +46,36 @@ public class HexMap : MonoBehaviour {
     private Hex[,] hexes;
     Dictionary<Hex, GameObject> hexToGameObjectMap;
 
+    private HashSet<Unit> units;
+    Dictionary<Unit, GameObject> unitToGameObjectMap;
+
     public bool AllowWrapEastWest = true;
 
     // Use this for initialization
     void Start () {
 		GenerateMap();
 	}
+
+    void Update() {
+        //Backspace will advanced turn
+        if (Input.GetKeyDown(KeyCode.Backspace)) {
+            if (units != null) {
+                foreach (Unit u in units) {
+                    u.DoTurn();
+                }
+            }
+        }
+    }
+
+    public Vector3 GetHexPosition(int q, int r) {
+        Hex hex = GetHexAt(q, r);
+
+        return GetHexPosition(hex);
+    }
+
+    public Vector3 GetHexPosition(Hex hex) {
+        return hex.PositionFromCamera(Camera.main.transform.position, numRows, numColumns);
+    }
 
     public Hex GetHexAt(int x, int y) {
         if (hexes == null) {
@@ -85,8 +110,6 @@ public class HexMap : MonoBehaviour {
         hexes = new Hex[numColumns, numRows];
         hexToGameObjectMap = new Dictionary<Hex, GameObject>();
 
-
-
         for (int column = 0; column < numColumns; column++) {
             for (int row = 0; row < numRows; row++) {
          
@@ -101,16 +124,12 @@ public class HexMap : MonoBehaviour {
 
                 hexToGameObjectMap[h] = hexGO;
 
-
                 var _hexcomp = hexGO.GetComponent<HexComponent>();
                 _hexcomp.Hex = h;
                 _hexcomp.HexMap = this;
                 
                 //Set the hex label
                 hexGO.transform.GetChild(1).GetComponent<TextMeshPro>().text = string.Format("{0},{1}", column, row);
-
-
-
             }
         }
 
@@ -118,6 +137,8 @@ public class HexMap : MonoBehaviour {
         //StaticBatchingUtility.Combine(this.gameObject);
         UpdateHexVisuals();
 
+        Unit unit = new Unit();
+        SpawnUnitAt(unit, GameManager.instance.playerUnit, (int) GameManager.instance.playerStartPos.x, (int) GameManager.instance.playerStartPos.y);
     }
 
     public Hex[] GetHexesWithinRangeOf(Hex centerHex, int range) {
@@ -185,6 +206,13 @@ public class HexMap : MonoBehaviour {
                 else if (h.Elevation >= HeightHill)
                 {
                     mf.mesh = MeshHill;
+                    Vector3 p = hexGO.transform.position;
+                    if (h.Elevation >= HeightHill)
+                    {
+                        p.y += 0.1f;
+                    }
+                    GameObject.Instantiate(HillPrefab, p, Quaternion.identity, hexGO.transform);
+
                 }
                 else if (h.Elevation >= HeightFlat)
                 {
@@ -198,6 +226,27 @@ public class HexMap : MonoBehaviour {
 
             }
         }
+    }
+
+    public void SpawnUnitAt(Unit unit, GameObject prefab, int q, int r) {
+
+        if (units == null) {
+            units = new HashSet<Unit>();
+            unitToGameObjectMap = new Dictionary<Unit, GameObject>();
+        }
+
+
+        Hex myHex = GetHexAt(q, r);
+        GameObject myHexGO = hexToGameObjectMap[myHex];
+        unit.SetHex(myHex);
+        GameObject unitGO = GameObject.Instantiate(prefab, myHexGO.transform.position, Quaternion.identity, myHexGO.transform);
+        //Register this event as a callback
+        unit.OnUnitMoved += unitGO.GetComponent<UnitView>().OnUnitMoved;
+
+        
+        units.Add(unit);
+        //unitToGameObjectMap[unit] = unitGO;
+        unitToGameObjectMap.Add(unit, unitGO);
     }
 
 }

@@ -27,6 +27,10 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
 
+    public GameObject playerUnit;
+    [HideInInspector] public Vector2 playerStartPos = new Vector2(36,10);
+
+
     private void Awake()
     {
         if (instance == null)
