@@ -283,7 +283,7 @@ MonoBehaviour:
   mouseWheelDisabled: 0
   scroll_fast_multiplier: 4
   _Cam: {fileID: 155264366}
-  MouseCameraControl: 0
+  MouseCameraControl: 1
   isCameraLocked: 0
   topdown: 0
 --- !u!114 &155264371

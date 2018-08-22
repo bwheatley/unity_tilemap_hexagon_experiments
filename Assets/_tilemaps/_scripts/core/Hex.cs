@@ -24,6 +24,9 @@ public class Hex {
     // Q + R + S = 0
     // S = -( Q + R )
 
+    //TODO need a way to track property of hext type (plains, grasslands)
+    //TODO need property to track hex details (forest, mine, farm)
+    
     public readonly int Q;  //Column
     public readonly int R;  //Row
     public readonly int S;  //Sum
@@ -140,5 +143,9 @@ public class Hex {
         return position;
     }
 
+    public int BaseMovementCost() {
+        //TODO: factor in terrain type & features
+        return 1;
+    }
 
 }
