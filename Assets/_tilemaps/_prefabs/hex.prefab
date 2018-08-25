@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4663972694889616}
   - component: {fileID: 114565304979322722}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: hex
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 23454702540647712}
   - component: {fileID: 64938287177449552}
   - component: {fileID: 54558252375416238}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: hex_model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 33628741296410726}
   - component: {fileID: 222422751012373564}
   - component: {fileID: 114426907365541624}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: hex_label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1697911083835052}
-  m_Mesh: {fileID: 4300000, guid: 42a055de1eafb1848a831fa408a32ecf, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 3e5f51dc29e447c4696da8b638351cce, type: 3}
 --- !u!54 &54558252375416238
 Rigidbody:
   m_ObjectHideFlags: 1

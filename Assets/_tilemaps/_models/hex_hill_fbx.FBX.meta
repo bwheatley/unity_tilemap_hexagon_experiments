@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 964a51126dc53f546bc1e34211de7c93
+guid: ba078a0a7db88894ca3e5378c9cdea7a
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -13,23 +13,19 @@ ModelImporter:
     400004: Hill2
     400006: Hill3
     400008: Hill4
-    2100000: None
-    2100002: No Name
-    2300000: //RootNode
-    2300002: Hill1
-    2300004: Hill2
-    2300006: Hill3
-    2300008: Hill4
-    3300000: //RootNode
-    3300002: Hill1
-    3300004: Hill2
-    3300006: Hill3
-    3300008: Hill4
-    4300000: Cylinder
-    4300002: Hill4
-    4300004: Hill3
-    4300006: Hill2
-    4300008: Hill1
+    2100000: No Name
+    2300000: Hill1
+    2300002: Hill2
+    2300004: Hill3
+    2300006: Hill4
+    3300000: Hill1
+    3300002: Hill2
+    3300004: Hill3
+    3300006: Hill4
+    4300000: Hill4
+    4300002: Hill3
+    4300004: Hill2
+    4300006: Hill1
   externalObjects: {}
   materials:
     importMaterials: 1

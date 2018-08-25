@@ -60,11 +60,12 @@ public class MouseController : MonoBehaviour {
 
         //int layerMask = 
 
-        if (Physics.Raycast(mouseRay, out hitInfo, Mathf.Infinity, )) {
-            //Something got hit
+        //if (Physics.Raycast(mouseRay, out hitInfo, Mathf.Infinity, )) {
+        //    //Something got hit
 
-        }
+        //}
 
+        return new Hex(null, 1, 1);
     }
 
     void Update_DetectModeStart() {
