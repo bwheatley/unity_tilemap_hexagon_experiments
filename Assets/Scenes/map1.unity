@@ -251,8 +251,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 155264366}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.70094, y: 18.01, z: -50}
+  m_LocalRotation: {x: -0.25881907, y: -0, z: -0, w: 0.9659259}
+  m_LocalPosition: {x: 76.62082, y: -13.64887, z: -49.7101}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -398,7 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 1
-  LogLevel: 0
+  LogLevel: 7
   playerUnit: {fileID: 1812754064078244, guid: 3f6790b5bccf42e45ae33c28b2a5ab60, type: 2}
   playerStartPos: {x: 36, y: 10}
 --- !u!114 &1220858580

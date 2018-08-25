@@ -5,7 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     public bool debug = true;
-    [Range(0, 7)]
+
+    [Range(0, 7)][Tooltip("0 is only emergency messages 7 is debug log everything")]
     public int LogLevel;
 
     //0 Emergency
@@ -26,6 +27,10 @@ public class GameManager : MonoBehaviour {
     public const int LogLevel_Debug = 7;
 
     public static GameManager instance;
+
+    //TODO testing, this should be moved to a game manager
+    public const bool MOVEMENT_RULES_LIKE_CIV6 = false;
+
 
     public GameObject playerUnit;
     [HideInInspector] public Vector2 playerStartPos = new Vector2(36,10);

@@ -54,6 +54,19 @@ public class MouseController : MonoBehaviour {
         return mouseRay.origin - (mouseRay.direction * rayLength);
     }
 
+    Hex MouseToHex() {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+
+        //int layerMask = 
+
+        if (Physics.Raycast(mouseRay, out hitInfo, Mathf.Infinity, )) {
+            //Something got hit
+
+        }
+
+    }
+
     void Update_DetectModeStart() {
         if (Input.GetMouseButtonDown(0)) {
             //Left Mouse button is down

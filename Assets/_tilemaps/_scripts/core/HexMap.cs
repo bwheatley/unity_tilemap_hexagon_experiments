@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using CameraController;
 using CameraController.Util;
+using QPath;
 using TMPro;
 
-public class HexMap : MonoBehaviour {
+public class HexMap : MonoBehaviour, IQPathWorld {
 
     public GameObject HexPrefab;
 
@@ -62,6 +63,16 @@ public class HexMap : MonoBehaviour {
             if (units != null) {
                 foreach (Unit u in units) {
                     u.DoTurn();
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.P)) {
+            if (units != null)
+            {
+                foreach (Unit u in units)
+                {
+                    u.DUMMY_PATHING_FUNCTION();
                 }
             }
         }
@@ -129,7 +140,7 @@ public class HexMap : MonoBehaviour {
                 _hexcomp.HexMap = this;
                 
                 //Set the hex label
-                hexGO.transform.GetChild(1).GetComponent<TextMeshPro>().text = string.Format("{0},{1}", column, row);
+                hexGO.transform.GetChild(1).GetComponent<TextMeshPro>().text = string.Format("{0},{1}\n{2}", column, row, h.BaseMovementCost());
             }
         }
 
@@ -165,6 +176,9 @@ public class HexMap : MonoBehaviour {
                 MeshRenderer mr = hexGO.GetComponentInChildren<MeshRenderer>();
                 MeshFilter mf = hexGO.GetComponentInChildren<MeshFilter>();
 
+                //Reset the movement since we start with ocean then repaint
+                h.MovementCost = 1;
+
                 //Moisture
                 if (h.Elevation >= HeightFlat && h.Elevation < HeightMountain) { //No mountains with trees
                     if (h.Moisture >= MoistureJungle) {
@@ -174,6 +188,8 @@ public class HexMap : MonoBehaviour {
                         {
                             p.y += 0.1f;
                         }
+
+                        h.MovementCost = 2;
                         GameObject.Instantiate(JunglePrefab, p, Quaternion.identity, hexGO.transform);
                     }
                     else if (h.Moisture >= MoistureForest) {                        
@@ -184,6 +200,7 @@ public class HexMap : MonoBehaviour {
                             p.y += 0.1f;
                         }
 
+                        h.MovementCost = 2;
                         GameObject.Instantiate(ForestPrefab, p, Quaternion.identity, hexGO.transform);
                     }
                     else if (h.Moisture >= MoistureGrasslands) {
@@ -202,6 +219,7 @@ public class HexMap : MonoBehaviour {
                 {
                     mr.material = MatMountain;
                     mf.mesh = MeshMountain;
+                    h.MovementCost = -99;
                 }
                 else if (h.Elevation >= HeightHill)
                 {
@@ -211,6 +229,7 @@ public class HexMap : MonoBehaviour {
                     {
                         p.y += 0.1f;
                     }
+                    h.MovementCost = 2;
                     GameObject.Instantiate(HillPrefab, p, Quaternion.identity, hexGO.transform);
 
                 }
@@ -222,7 +241,11 @@ public class HexMap : MonoBehaviour {
                 {
                     mr.material = MatOcean;
                     mf.mesh = MeshWater;
+                    h.MovementCost = -99;
                 }
+
+                //Set the hex label
+                hexGO.transform.GetChild(1).GetComponent<TextMeshPro>().text = string.Format("{0},{1}\n{2}", column, row, h.BaseMovementCost());
 
             }
         }
@@ -249,4 +272,7 @@ public class HexMap : MonoBehaviour {
         unitToGameObjectMap.Add(unit, unitGO);
     }
 
+    public IQPathTile GetTileAt(int x, int y) {
+        throw new NotImplementedException();
+    }
 }
