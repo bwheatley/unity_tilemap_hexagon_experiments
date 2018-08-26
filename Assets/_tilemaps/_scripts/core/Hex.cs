@@ -36,8 +36,15 @@ public class Hex : IQPathTile {
     public float Elevation;
     public float Moisture;
 
-    //TODO this is just a temporary public value to test
-    public int MovementCost = 1;
+    public enum TERRAIN_TYPE { PLAINS, GRASSLANDS, MARSH, FLOODPLAINS, DESERT, LAKE, OCEAN};
+    public enum ELEVATION_TYPE { FLAT, HILL, MOUNTAIN, PLATEAU, SHALLOWWATER, DEEPWATER };
+
+    public TERRAIN_TYPE TerrainType { get; set; }
+    public ELEVATION_TYPE ElevationType { get; set; }
+
+    public enum FEATURE_TYPE { NONE, FOREST, RAINFOREST, MARSH };
+    public FEATURE_TYPE FeatureType { get; set; }
+
 
     static private readonly float WIDTH_MULTIPLIER = Mathf.Sqrt(3) / 2;
     float radius = 1f;
@@ -157,9 +164,33 @@ public class Hex : IQPathTile {
         return string.Format("Q:{0}, R:{1}", this.Q, this.R);
     }
 
-    public int BaseMovementCost() {
-        //TODO: factor in terrain type & features
-        return MovementCost;
+    /// <summary>
+    /// Returns the most common movement cost for this tile for a typical unit 
+    /// </summary>
+    /// <returns>The movement cost.</returns>
+    public int BaseMovementCost(bool isHillWalker, bool isForestWalker, bool isFlyer, bool isBoat, bool isMountainWalker) {
+        if ((ElevationType == ELEVATION_TYPE.MOUNTAIN || ElevationType == ELEVATION_TYPE.DEEPWATER || ElevationType == ELEVATION_TYPE.SHALLOWWATER) && !isFlyer)
+        {
+            return -99;
+        }
+
+        int moveCost = 1;
+
+        if (!isHillWalker && ElevationType == ELEVATION_TYPE.HILL)
+        {
+            moveCost++;
+        }
+
+        if ( (!isMountainWalker || !isFlyer ) && ElevationType == ELEVATION_TYPE.MOUNTAIN )
+        {
+            moveCost++;
+        }
+        if ( (!isForestWalker || !isFlyer ) && (FeatureType == FEATURE_TYPE.FOREST || FeatureType == FEATURE_TYPE.RAINFOREST) )
+        {
+            moveCost++;
+        }
+
+        return moveCost;
     }
 
     #region IQPathTile implmentation

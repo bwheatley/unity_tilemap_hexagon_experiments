@@ -54,6 +54,12 @@ public class Unit : IQPathUnit {
         hexPath.Dequeue();
         Hex newHex = hexPath.Peek();
 
+        /* If the length of hexpath is 1 it's because it's the only thing in the hex
+         * is the current hex, so lets just clear
+         */
+        if (hexPath.Count == 1){
+            hexPath = null;
+        }
 
         //move to the new hex
         SetHex(newHex);
@@ -63,7 +69,13 @@ public class Unit : IQPathUnit {
     public int MovementCostToEnterHex( Hex hex) {
         //TODO override base movement cost based on our
         //movement mode + tile type (flying, walking etc)
-        return hex.BaseMovementCost();
+
+         // Example of how to alter default movement
+        //if (WeAreaHillWalker && hex.ElevationType == Hex.ELEVATION_TYPE.HILL)
+            //return 1;
+
+        //TODO implement other unit traits
+        return hex.BaseMovementCost(false, false, false, false, false);
     }
 
     public float AggregateTurnsToEnterHex( Hex hex, float turnsToDate) {
