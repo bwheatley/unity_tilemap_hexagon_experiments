@@ -19,6 +19,10 @@ public class Unit : IQPathUnit {
 
     public Hex Hex { get; protected set; }
 
+    /// <summary>
+    /// List of hexes to walk through, from pathfinder
+    /// NOTE: First item is always the hex we are standing in
+    /// </summary>
     private Queue<Hex> hexPath;
 
     public void SetHex(Hex newHex) {
@@ -47,7 +51,8 @@ public class Unit : IQPathUnit {
         }
 
         //Grab the first hex from our queue
-        Hex newHex = hexPath.Dequeue();
+        hexPath.Dequeue();
+        Hex newHex = hexPath.Peek();
 
 
         //move to the new hex
@@ -138,8 +143,6 @@ public class Unit : IQPathUnit {
         //Turnsusedafterthismove is now  some value from 0..1.
         //this includes the fractional part of moves from previous turns
 
-        
-
 
         //Do we return the number of turns THIS Move is going to take?
         //No, it's an aggregate so it should return the total turn cost
@@ -172,11 +175,15 @@ public class Unit : IQPathUnit {
     {
         this.hexPath = new Queue<Hex>(hexArray);
 
-        if (hexPath.Count > 0) {
-            this.hexPath.Dequeue(); //First hex is local hex get rid of it
-        }
+        //if (hexPath.Count > 0) {
+        //    this.hexPath.Dequeue(); //First hex is local hex get rid of it
+        //}
     }
 
+
+    public Hex[] GetHexPath(){
+        return (this.hexPath == null ) ? null : this.hexPath.ToArray();
+    }
 
     public void DUMMY_PATHING_FUNCTION() {
         Debug.Log("Dummy Path");

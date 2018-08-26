@@ -46,6 +46,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
 
     private Hex[,] hexes;
     Dictionary<Hex, GameObject> hexToGameObjectMap;
+    Dictionary<GameObject, Hex> gameObjectToHexMap;
 
     private HashSet<Unit> units;
     Dictionary<Unit, GameObject> unitToGameObjectMap;
@@ -120,6 +121,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
 
         hexes = new Hex[numColumns, numRows];
         hexToGameObjectMap = new Dictionary<Hex, GameObject>();
+        gameObjectToHexMap = new Dictionary<GameObject, Hex>();
 
         for (int column = 0; column < numColumns; column++) {
             for (int row = 0; row < numRows; row++) {
@@ -134,6 +136,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
                 GameObject hexGO = (GameObject) Instantiate(HexPrefab, h.Position(), Quaternion.identity, this.transform);
 
                 hexToGameObjectMap[h] = hexGO;
+                gameObjectToHexMap[hexGO] = h;
 
                 var _hexcomp = hexGO.GetComponent<HexComponent>();
                 _hexcomp.Hex = h;
@@ -164,6 +167,22 @@ public class HexMap : MonoBehaviour, IQPathWorld {
         }
 
         return results.ToArray();
+    }
+
+    public Hex GetHexFromGameObject(GameObject hexGO){
+        if(gameObjectToHexMap.ContainsKey(hexGO)) {
+            return gameObjectToHexMap[hexGO];
+        }
+        return null;
+    }
+
+    public GameObject GetHexGO(Hex h)
+    {
+        if (hexToGameObjectMap.ContainsKey(h))
+        {
+            return hexToGameObjectMap[h];
+        }
+        return null;
     }
 
     public void UpdateHexVisuals() {

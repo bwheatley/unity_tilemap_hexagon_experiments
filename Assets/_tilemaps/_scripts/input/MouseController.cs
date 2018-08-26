@@ -8,6 +8,9 @@ public class MouseController : MonoBehaviour {
 
     //Generic Bookkeeping vars
     private Vector3 lastMousePosition;  //From input.mouseposition
+    HexMap hexMap;
+    Hex hexUnderMouse;
+    Hex hexLastUnderMouse; 
 
     //Camera Dragging bookkeeping vars
     public bool MouseCameraControl = true;
@@ -18,18 +21,27 @@ public class MouseController : MonoBehaviour {
     delegate void UpdateFunc();
     private UpdateFunc Update_CurrentFunc;
 
+    //Unit Movement
     private Unit selectedUnit = null;
+    Hex[] hexPath;
+    LineRenderer lineRenderer;
 
+
+    public LayerMask LayerIDForHexTiles;
 
 
     // Use this for initialization
     void Start () {
         Update_CurrentFunc = Update_DetectModeStart;
+        hexMap = GameObject.FindObjectOfType<HexMap>();
+        lineRenderer = transform.GetComponentInChildren<LineRenderer>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-	    if (Input.GetKeyDown(KeyCode.Escape)) {
+        hexUnderMouse = MouseToHex();
+
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             //Cancel anaything
             CancelUpdateFunc();
 	    }
@@ -37,7 +49,17 @@ public class MouseController : MonoBehaviour {
 	    Update_CurrentFunc();
 
 	    lastMousePosition = Input.mousePosition;
-	}
+        hexLastUnderMouse = hexUnderMouse;
+
+        if (selectedUnit != null){
+            // draw a path
+            DrawPath( (hexPath != null) ? hexPath : selectedUnit.GetHexPath()   );
+        }
+        else {
+            DrawPath( null );  //Clear the drawn path on screen
+        }
+
+    }
 
     virtual public Vector3 MouseToGroundPlane()
     {
@@ -58,24 +80,55 @@ public class MouseController : MonoBehaviour {
         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
 
-        //int layerMask = 
+        //int layerMask = 1 << (LayerIDForHexTiles);
 
-        //if (Physics.Raycast(mouseRay, out hitInfo, Mathf.Infinity, )) {
-        //    //Something got hit
+        if (Physics.Raycast(mouseRay, out hitInfo, Mathf.Infinity, LayerIDForHexTiles)) {
+            //Get the parent of the object
+            //var _hex = hitInfo.collider.gameObject.transform.parent.GetComponent<HexComponent>().Hex;
+            GameObject hexGO = hitInfo.rigidbody.gameObject;
 
-        //}
+            //Something got hit
+            //Util.WriteDebugLog(string.Format("Mouse To Hex: {0}", hitInfo.collider.gameObject.transform.parent.GetComponent<HexComponent>().Hex), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
 
-        return new Hex(null, 1, 1);
+            return hexMap.GetHexFromGameObject(hexGO);
+        }
+
+        //Util.WriteDebugLog(string.Format("Found Nothing"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
+        return null;
     }
 
     void Update_DetectModeStart() {
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0))
+        {
             //Left Mouse button is down
             //This doesn't do anything by itself, depends if we're draging etc
 
         }
-        else if(Input.GetMouseButtonUp(0)){
+        else if (Input.GetMouseButtonUp(0))
+        {
             //Select unit
+            Util.WriteDebugLog(string.Format("Mouse Click!"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
+
+            Unit[] us = hexUnderMouse.Units();
+
+
+            //TODO implement clicking through multiple units
+            if (us.Length > 0)
+            {
+                selectedUnit = us[0];
+                Util.WriteDebugLog(string.Format("Selected Unit {0}", selectedUnit.Name), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
+
+                //Note selecting a unit does not change the mouse mode
+
+                //Update_CurrentFunc = Update_UnitMovement;
+            }
+
+        }
+        else if (selectedUnit != null && Input.GetMouseButtonDown(1)){
+            //We have a selected unit, and we've pushed down the right
+            //mouse button
+            Update_CurrentFunc = Update_UnitMovement;
+
         }
         // Mouse camera broke for now fix later
         //else if (Input.GetMouseButton(0) && Input.mousePosition != lastMousePosition)
@@ -96,15 +149,62 @@ public class MouseController : MonoBehaviour {
     }
 
     void Update_UnitMovement() {
-        if (Input.GetMouseButtonUp(1)) {
+        if (Input.GetMouseButtonUp(1)  || selectedUnit == null) {
             Util.WriteDebugLog(string.Format("Complete Unit movements"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
 
             //Todo copy pathfinding path to units movement queue
+            if (selectedUnit != null){
+                selectedUnit.SetHexPath(hexPath);
+            }
 
             Cancel();
+            return;
+        }
+
+
+
+        // We have a selected unit
+
+        // Look at hex under mouse
+
+        // is this a different hex than before? or we don't alredy have a path
+        if (hexPath == null || hexUnderMouse != hexLastUnderMouse){
+
+            // Do a pathfinding search to that hex
+            hexPath = QPath.QPath.FindPath<Hex>(
+                hexMap,
+                selectedUnit,
+                selectedUnit.Hex,
+                hexUnderMouse,
+                Hex.CostEstimate
+            );
+
 
         }
+
+
     }
+
+    void DrawPath(Hex[] hexPath){
+
+        if ( hexPath == null || hexPath.Length == 0){
+            lineRenderer.enabled = false;
+            return;
+        }
+        lineRenderer.enabled = true;
+
+        Vector3[] ps = new Vector3[hexPath.Length];
+
+        for (int h = 0; h < hexPath.Length; h++)
+        {
+            GameObject hexGO = hexMap.GetHexGO(hexPath[h]);
+            ps[h] = hexGO.transform.position + (new Vector3(0f,0f,-0.2f));
+        }
+
+        lineRenderer.positionCount = ps.Length;
+        lineRenderer.SetPositions(ps);
+    }
+
 
     void Cancel(string message = null) {
         if (message != null) {
@@ -118,8 +218,9 @@ public class MouseController : MonoBehaviour {
 
     void CancelUpdateFunc() {
         Update_CurrentFunc = Update_DetectModeStart;
-
         //TODO Also do any ui cleanup 
+        selectedUnit = null;
+        hexPath = null;
     }
 
     virtual public void Update_CameraDrag() {
