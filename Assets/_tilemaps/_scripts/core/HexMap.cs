@@ -20,6 +20,8 @@ public class HexMap : MonoBehaviour, IQPathWorld {
     public GameObject ForestPrefab;
     public GameObject JunglePrefab;
     public GameObject HillPrefab;
+    public GameObject City_Level1;
+
 
     // readonly will keep this from showing up in the editor and being confused when you can't figure out
     // why maps not working like you want
@@ -48,10 +50,17 @@ public class HexMap : MonoBehaviour, IQPathWorld {
     Dictionary<Hex, GameObject> hexToGameObjectMap;
     Dictionary<GameObject, Hex> gameObjectToHexMap;
 
+
+    //TODO: seperate unit list for each player
     private HashSet<Unit> units;
     Dictionary<Unit, GameObject> unitToGameObjectMap;
 
+    private HashSet<City> cities;
+    Dictionary<City, GameObject> cityToGameObjectMap;
+
     public bool AllowWrapEastWest = true;
+
+    public bool AnimationIsPlaying = false;
 
     // Use this for initialization
     void Start () {
@@ -61,11 +70,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
     void Update() {
         //Backspace will advanced turn
         if (Input.GetKeyDown(KeyCode.Backspace)) {
-            if (units != null) {
-                foreach (Unit u in units) {
-                    u.DoTurn();
-                }
-            }
+            StartCoroutine(DoAllUnitMoves());
         }
 
         if (Input.GetKeyDown(KeyCode.P)) {
@@ -76,6 +81,51 @@ public class HexMap : MonoBehaviour, IQPathWorld {
                     u.DUMMY_PATHING_FUNCTION();
                 }
             }
+        }
+    }
+
+    public void EndTurn() {
+        // First check to see if there are any units that have enqueued moves, if so process them.
+
+        //Now are any units waiting for orders? if so halt end turn()
+
+        //heal resting units
+
+        //Reset unit movement
+        foreach (Unit u in units) {
+            u.RefreshMovement();
+        }
+
+
+        //Goto next player
+
+        //End 
+    }
+
+    IEnumerator DoAllUnitMoves() {
+        if (units != null)
+        {
+            foreach (Unit u in units)
+            {
+                //We don't do any of the checkin here if units have any moves. 
+                //It will be on DoMove and immediately return
+
+                yield return DoUnitMoves(u);
+            }
+        }
+    }
+
+    public IEnumerator DoUnitMoves(Unit u) {
+        while (u.DoMove()) {
+            Util.WriteDebugLog(
+                string.Format("DoMove returned true -- will be called again"
+                ), GameManager.LogLevel_Notice, GameManager.instance.debug,
+                GameManager.instance.LogLevel);
+            //TODO check to see if an animation is playing and wait for it to finish.
+            while (AnimationIsPlaying) {
+                yield return null; //Wait one frame
+            }
+
         }
     }
 
@@ -156,6 +206,10 @@ public class HexMap : MonoBehaviour, IQPathWorld {
         UpdateHexVisuals();
 
         Unit unit = new Unit();
+
+        //For Debug, let this unit build cities
+        unit.CanBuildCities = true;
+
         SpawnUnitAt(unit, GameManager.instance.playerUnit, (int) GameManager.instance.playerStartPos.x, (int) GameManager.instance.playerStartPos.y);
     }
 
@@ -293,14 +347,39 @@ public class HexMap : MonoBehaviour, IQPathWorld {
         Hex myHex = GetHexAt(q, r);
         GameObject myHexGO = hexToGameObjectMap[myHex];
         unit.SetHex(myHex);
+
         GameObject unitGO = GameObject.Instantiate(prefab, myHexGO.transform.position, Quaternion.identity, myHexGO.transform);
         //Register this event as a callback
-        unit.OnUnitMoved += unitGO.GetComponent<UnitView>().OnUnitMoved;
+        unit.OnObjectMoved += unitGO.GetComponent<UnitView>().OnObjectMoved;
 
         
         units.Add(unit);
         //unitToGameObjectMap[unit] = unitGO;
         unitToGameObjectMap.Add(unit, unitGO);
+    }
+
+    public void SpawnCityAt(City city, GameObject prefab, int q, int r)
+    {
+        Util.WriteDebugLog(
+            string.Format("HexMap::SpawnCityAt"
+            ), GameManager.LogLevel_Notice, GameManager.instance.debug,
+            GameManager.instance.LogLevel);
+
+        if (cities == null)
+        {
+            cities = new HashSet<City>();
+            cityToGameObjectMap = new Dictionary<City, GameObject>();
+        }
+
+        Hex myHex = GetHexAt(q, r);
+        GameObject myHexGO = hexToGameObjectMap[myHex];
+        //city.SetHex(myHex);
+
+        GameObject unitGO = GameObject.Instantiate(prefab, myHexGO.transform.position, Quaternion.identity, myHexGO.transform);
+
+
+        cities.Add(city);
+
     }
 
     public IQPathTile GetTileAt(int x, int y) {

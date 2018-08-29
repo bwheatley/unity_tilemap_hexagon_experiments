@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CameraController.Util;
+using UnityEngine.EventSystems;
 
 public class MouseController : MonoBehaviour {
 
@@ -22,7 +23,18 @@ public class MouseController : MonoBehaviour {
     private UpdateFunc Update_CurrentFunc;
 
     //Unit Movement
-    private Unit selectedUnit = null;
+    private Unit __selectedUnit = null;
+
+    public Unit SelectedUnit {
+        get { return __selectedUnit; }
+        set
+        {
+            __selectedUnit = value;
+            GameManager.instance.uiUnitSelectionPanel.SetActive(__selectedUnit != null);
+        }
+    }
+
+
     Hex[] hexPath;
     LineRenderer lineRenderer;
 
@@ -43,6 +55,7 @@ public class MouseController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
             //Cancel anaything
+            SelectedUnit = null;
             CancelUpdateFunc();
 	    }
 
@@ -51,9 +64,9 @@ public class MouseController : MonoBehaviour {
 	    lastMousePosition = Input.mousePosition;
         hexLastUnderMouse = hexUnderMouse;
 
-        if (selectedUnit != null){
+        if (SelectedUnit != null){
             // draw a path
-            DrawPath( (hexPath != null) ? hexPath : selectedUnit.GetHexPath()   );
+            DrawPath( (hexPath != null) ? hexPath : SelectedUnit.GetHexPath()   );
         }
         else {
             DrawPath( null );  //Clear the drawn path on screen
@@ -98,6 +111,14 @@ public class MouseController : MonoBehaviour {
     }
 
     void Update_DetectModeStart() {
+
+        //Check here if we're over a UI element and ignore if we need to ignore clicks
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            //TODO do we want to ignore all gui objects? unit health bars, resource icons, etc
+            //Although if those are set to noninteractive or not block raycasts, maybe this will return false anyway
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             //Left Mouse button is down
@@ -113,10 +134,10 @@ public class MouseController : MonoBehaviour {
 
 
             //TODO implement clicking through multiple units
-            if (us.Length > 0)
+            if ( us.Length > 0)
             {
-                selectedUnit = us[0];
-                Util.WriteDebugLog(string.Format("Selected Unit {0}", selectedUnit.Name), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
+                SelectedUnit = us[0];
+                Util.WriteDebugLog(string.Format("Selected Unit {0}", SelectedUnit.Name), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
 
                 //Note selecting a unit does not change the mouse mode
 
@@ -124,7 +145,7 @@ public class MouseController : MonoBehaviour {
             }
 
         }
-        else if (selectedUnit != null && Input.GetMouseButtonDown(1)){
+        else if (SelectedUnit != null && Input.GetMouseButtonDown(1)){
             //We have a selected unit, and we've pushed down the right
             //mouse button
             Update_CurrentFunc = Update_UnitMovement;
@@ -138,7 +159,7 @@ public class MouseController : MonoBehaviour {
         //    Update_CurrentFunc = Update_CameraDrag;
         //    Update_CurrentFunc();
         //}
-        else if (selectedUnit != null && Input.GetMouseButton(1)) {
+        else if (SelectedUnit != null && Input.GetMouseButton(1)) {
             //We have a selected unit and are holding down the mouse mbutton, show a path from 
             // unit to mouse position via the pathfinding system
 
@@ -149,12 +170,15 @@ public class MouseController : MonoBehaviour {
     }
 
     void Update_UnitMovement() {
-        if (Input.GetMouseButtonUp(1)  || selectedUnit == null) {
+        if (Input.GetMouseButtonUp(1)  || SelectedUnit == null) {
             Util.WriteDebugLog(string.Format("Complete Unit movements"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
 
             //Todo copy pathfinding path to units movement queue
-            if (selectedUnit != null){
-                selectedUnit.SetHexPath(hexPath);
+            if (SelectedUnit != null){
+                SelectedUnit.SetHexPath(hexPath);
+
+                //TODO: tell unit and or hexmap to process unit movement
+                StartCoroutine(hexMap.DoUnitMoves(SelectedUnit));
             }
 
             Cancel();
@@ -173,8 +197,8 @@ public class MouseController : MonoBehaviour {
             // Do a pathfinding search to that hex
             hexPath = QPath.QPath.FindPath<Hex>(
                 hexMap,
-                selectedUnit,
-                selectedUnit.Hex,
+                SelectedUnit,
+                SelectedUnit.Hex,
                 hexUnderMouse,
                 Hex.CostEstimate
             );
@@ -219,7 +243,7 @@ public class MouseController : MonoBehaviour {
     void CancelUpdateFunc() {
         Update_CurrentFunc = Update_DetectModeStart;
         //TODO Also do any ui cleanup 
-        selectedUnit = null;
+
         hexPath = null;
     }
 

@@ -28,11 +28,17 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
 
+    //UI START
+    public GameObject uiUnitSelectionPanel;
+
+    //UI END
+
     //TODO testing, this should be moved to a game manager
     public const bool MOVEMENT_RULES_LIKE_CIV6 = false;
 
 
     public GameObject playerUnit;
+    public GameObject CityLevel1Prefab;
     [HideInInspector] public Vector2 playerStartPos = new Vector2(36,10);
 
 

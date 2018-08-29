@@ -5,65 +5,106 @@ using CameraController.Util;
 using QPath;
 using UnityEngine;
 
-public class Unit : IQPathUnit {
+public class Unit : MapObject, IQPathUnit {
 
 
-    public string Name = "Unnamed Unit";
-    public int HitPoints = 100;
-    public int Strenght = 8;
+    public Unit() {
+        Name = "Soldier";
+        HitPoints = 100;
+
+    }
+
+
+
+public int Strenght = 8;
     public int Movement = 2;
     public int MovementRemaining = 2;
 
-    public delegate void UnitMovedDelegate(Hex oldHex, Hex newHex);
-    public event UnitMovedDelegate OnUnitMoved;
+    public bool CanBuildCities;
+    public bool CanBuild;
 
-    public Hex Hex { get; protected set; }
 
     /// <summary>
     /// List of hexes to walk through, from pathfinder
     /// NOTE: First item is always the hex we are standing in
     /// </summary>
-    private Queue<Hex> hexPath;
+    private List<Hex> hexPath;
 
-    public void SetHex(Hex newHex) {
 
-        Hex oldHex = Hex;
-        
-        if (Hex != null) {
-            newHex.RemoveUnit(this);
+    public bool UnitWaitingForOrders() {
+        //Returns true if we have movement left but nothing queued
+
+        if (
+            MovementRemaining > 0 && 
+            (hexPath == null || hexPath.Count == 0)
+            //TODO: maybe we've been told to Fority/Alert/Silent/SkipTurn
+            ) {
+
+            return true;
         }
 
-        Hex = newHex;
-        Hex.AddUnit(this);
-
-        if (OnUnitMoved != null) {
-            OnUnitMoved(oldHex, newHex);
-        }
-
+        return false;
     }
 
-    public void DoTurn() {
+    /// <summary>
+    /// Processes one tile worth of movement for the unit.
+    /// </summary>
+    /// <returns><c>true</c>, if this should be called immediately again, <c>false</c> otherwise.</returns>
+    public bool DoMove() {
         //Do the turn/queued move?
-        Debug.Log("Do Turn");
+        Debug.Log("DoMove");
+
+        if (MovementRemaining <= 0) {
+            return false;
+        }
+
         //Do queue move
         if (hexPath == null || hexPath.Count == 0) {
-            return;
+            return false;
         }
 
         //Grab the first hex from our queue
-        hexPath.Dequeue();
-        Hex newHex = hexPath.Peek();
+        Hex hexWeAreLeaving = hexPath[0];
+        Hex newHex = hexPath[1];
+
+        int costToEnter = MovementCostToEnterHex(newHex);
+
+        if (costToEnter > MovementRemaining && MovementRemaining < Movement && GameManager.MOVEMENT_RULES_LIKE_CIV6) {
+            //We can't enter the hex tis turn
+            return false;
+        }
+
+        //Dequeue the first piece of the path
+        hexPath.RemoveAt(0);
 
         /* If the length of hexpath is 1 it's because it's the only thing in the hex
          * is the current hex, so lets just clear
          */
-        if (hexPath.Count == 1){
+        if (hexPath.Count == 1)
+        {
             hexPath = null;
         }
 
         //move to the new hex
         SetHex(newHex);
 
+        //Update movement remaining don't go under 0
+        MovementRemaining = Mathf.Max(MovementRemaining - costToEnter, 0);
+
+        //Return true if we should be called again.
+        return hexPath != null && MovementRemaining > 0;
+    }
+
+    override public void SetHex(Hex newHex) {
+
+        if (Hex != null)
+        {
+            newHex.RemoveUnit(this);
+        }
+
+        base.SetHex(newHex);
+
+        Hex.AddUnit(this);
     }
 
     public int MovementCostToEnterHex( Hex hex) {
@@ -166,6 +207,10 @@ public class Unit : IQPathUnit {
 
     }
 
+    public void RefreshMovement() {
+        MovementRemaining = Movement;
+    }
+
     /// <summary>
     /// Turn cost to enter a hex (i.e. 0.5 turns if a movement cost is 1 and we have 2 max movement)
     /// </summary>
@@ -180,12 +225,12 @@ public class Unit : IQPathUnit {
     /// Clear out a HexPath if we need to kill a queue for a unit
     /// </summary>
     public void ClearHexPath() {
-        this.hexPath = new Queue<Hex>();
+        this.hexPath = new List<Hex>();
     }
 
     public void SetHexPath(Hex[] hexArray)
     {
-        this.hexPath = new Queue<Hex>(hexArray);
+        this.hexPath = new List<Hex>(hexArray);
 
         //if (hexPath.Count > 0) {
         //    this.hexPath.Dequeue(); //First hex is local hex get rid of it

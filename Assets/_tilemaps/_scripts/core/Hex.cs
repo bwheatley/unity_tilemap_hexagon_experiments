@@ -19,6 +19,7 @@ public class Hex : IQPathTile {
         this.R = r;
         this.S = -(q + r);
 
+        units = new HashSet<Unit>();
     }
 
 
@@ -56,7 +57,6 @@ public class Hex : IQPathTile {
     public readonly HexMap HexMap;
 
     private Hex[] neighbors;
-
 
     public void AddUnit(Unit unit) {
         if (units == null) {
