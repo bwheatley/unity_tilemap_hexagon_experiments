@@ -52,7 +52,7 @@ LightmapSettings:
     m_AlbedoBoost: 1
     m_TemporalCoherenceThreshold: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 0
+    m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 10
@@ -89,7 +89,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000002, guid: d3d652aad39516e418be274ead2bbeca,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -592,7 +593,7 @@ Camera:
   far clip plane: 999.88
   field of view: 60
   orthographic: 1
-  orthographic size: 40
+  orthographic size: 2.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -614,13 +615,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 155264366}
-  m_LocalRotation: {x: -0.25881907, y: -0, z: -0, w: 0.9659259}
-  m_LocalPosition: {x: 76.62082, y: -13.64887, z: -49.7101}
+  m_LocalRotation: {x: -0.26050454, y: 0, z: 0, w: 0.96547264}
+  m_LocalPosition: {x: 66.2, y: -20.6, z: -67.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -30.2, y: 0, z: 0}
 --- !u!114 &155264370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1477,7 +1478,8 @@ MonoBehaviour:
   LogLevel: 7
   uiUnitSelectionPanel: {fileID: 64469462}
   playerUnit: {fileID: 1812754064078244, guid: 3f6790b5bccf42e45ae33c28b2a5ab60, type: 2}
-  CityLevel1Prefab: {fileID: 0}
+  CityLevel1Prefab: {fileID: 1604604542717232, guid: 416a17ac51588844aa808d1e1018946f,
+    type: 2}
   playerStartPos: {x: 36, y: 10}
 --- !u!114 &1220858580
 MonoBehaviour:

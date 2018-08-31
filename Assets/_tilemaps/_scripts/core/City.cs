@@ -14,7 +14,19 @@ public class City : MapObject
 
         }
 
+        override public void SetHex(Hex newHex)
+        {
+
+            if (Hex != null)
+            {
+                //Will cities be able to move from 1 hex to another?
+                newHex.RemoveCity(this);
+            }
+
+            base.SetHex(newHex);
+
+            Hex.AddCity(this);
+        }
 
 
-
-    }
+}

@@ -130,7 +130,7 @@ public class MouseController : MonoBehaviour {
             //Select unit
             Util.WriteDebugLog(string.Format("Mouse Click!"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
 
-            Unit[] us = hexUnderMouse.Units();
+            Unit[] us = hexUnderMouse.Units;
 
 
             //TODO implement clicking through multiple units

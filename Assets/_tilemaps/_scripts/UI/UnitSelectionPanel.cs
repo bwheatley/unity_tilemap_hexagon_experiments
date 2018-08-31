@@ -31,10 +31,16 @@ public class UnitSelectionPanel : MonoBehaviour {
 	        Hex[] hexPath = mouseController.SelectedUnit.GetHexPath();
             HexPath.text = string.Format("{0}", hexPath == null ? "0" : hexPath.Length.ToString());
 
-            CityBuildButton.SetActive(mouseController.SelectedUnit.CanBuildCities);
+
+	        if (mouseController.SelectedUnit.CanBuildCities && mouseController.SelectedUnit.Hex.City == null) {
+	            CityBuildButton.SetActive(true);
+	        }
+            else {
+	            CityBuildButton.SetActive(false);
+            }
 
 
-	    }
+        }
 
 	}
 }

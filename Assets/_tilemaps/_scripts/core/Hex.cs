@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CameraController.Util;
 using QPath;
 using UnityEngine;
 
@@ -51,12 +52,40 @@ public class Hex : IQPathTile {
     float radius = 1f;
 
     private HashSet<Unit> units;
+    public Unit[] Units {
+        get { return units.ToArray(); }
+    }
+
+    public City City { get; protected set; }
 
     private float vertMod = 0.75f;
 
     public readonly HexMap HexMap;
 
     private Hex[] neighbors;
+
+    public void AddCity(City city) {
+        if (this.City != null) {
+            //Util.WriteDebugLog(string.Format("Trying to add a city to a hex that already has one!!"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel, true);
+            throw new UnityException(string.Format("Trying to add a city to a hex that already has one!!"));
+            return;
+        }
+
+        this.City = city;
+    }
+
+    public void RemoveCity(City city) {
+        if (this.City == null) {
+            Util.WriteDebugLog(string.Format("Trying to remove a city to a hex that does not have one!!"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
+            return;
+        }
+        if (this.City != city) {
+            Util.WriteDebugLog(string.Format("Trying to remove a city that is not ours"), GameManager.LogLevel_Info, GameManager.instance.debug, GameManager.instance.LogLevel);
+            return;
+        }
+
+        this.City = null;
+    }
 
     public void AddUnit(Unit unit) {
         if (units == null) {
@@ -71,10 +100,6 @@ public class Hex : IQPathTile {
         if (unit != null && units != null) {
             units.Remove(unit);
         }
-    }
-
-    public Unit[] Units() {
-        return units.ToArray();
     }
 
     /// <summary>

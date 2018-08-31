@@ -211,6 +211,10 @@ public class HexMap : MonoBehaviour, IQPathWorld {
         unit.CanBuildCities = true;
 
         SpawnUnitAt(unit, GameManager.instance.playerUnit, (int) GameManager.instance.playerStartPos.x, (int) GameManager.instance.playerStartPos.y);
+
+        City city = new City();
+        SpawnCityAt(city, GameManager.instance.CityLevel1Prefab, (int) GameManager.instance.playerStartPos.x+1, (int) GameManager.instance.playerStartPos.y);
+
     }
 
     public Hex[] GetHexesWithinRangeOf(Hex centerHex, int range) {
@@ -373,13 +377,19 @@ public class HexMap : MonoBehaviour, IQPathWorld {
 
         Hex myHex = GetHexAt(q, r);
         GameObject myHexGO = hexToGameObjectMap[myHex];
-        //city.SetHex(myHex);
+        try {
+            city.SetHex(myHex);
+        }
+        catch(UnityException e) {
+            Debug.LogError(e.Message);
+            return;
+        }
 
-        GameObject unitGO = GameObject.Instantiate(prefab, myHexGO.transform.position, Quaternion.identity, myHexGO.transform);
+        GameObject cityGo = GameObject.Instantiate(prefab, myHexGO.transform.position, Quaternion.identity, myHexGO.transform);
 
 
         cities.Add(city);
-
+        cityToGameObjectMap.Add(city, cityGo);
     }
 
     public IQPathTile GetTileAt(int x, int y) {
