@@ -61,6 +61,9 @@ public class HexMap : MonoBehaviour, IQPathWorld {
     public bool AllowWrapEastWest = true;
 
     public bool AnimationIsPlaying = false;
+    public delegate void CityCreatedDelegate(City city, GameObject cityGO);
+    public event CityCreatedDelegate OnCityCreated;
+
 
     // Use this for initialization
     void Start () {
@@ -390,6 +393,10 @@ public class HexMap : MonoBehaviour, IQPathWorld {
 
         cities.Add(city);
         cityToGameObjectMap.Add(city, cityGo);
+
+        if (OnCityCreated != null) {
+            OnCityCreated(city, cityGo);
+        }
     }
 
     public IQPathTile GetTileAt(int x, int y) {
