@@ -114,7 +114,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
                 string.Format( "Player {0}", i+1 )
             );
         }
-        CurrentPlayer = Players[ 0 ];
+        //CurrentPlayer = Players[ 0 ];
     }
 
     IEnumerator DoAllUnitMoves() {
