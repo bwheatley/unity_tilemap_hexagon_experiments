@@ -83,7 +83,17 @@ public class MouseController : MonoBehaviour {
 	    lastMousePosition = Input.mousePosition;
         hexLastUnderMouse = hexUnderMouse;
 
-        if (SelectedUnit != null){
+        if ( SelectedUnit != null && SelectedUnit.IsDestroyed ) {
+            //We are pointing to a destroyed object
+            SelectedUnit = null;
+        }
+
+        if ( SelectedCity != null && SelectedCity.IsDestroyed ) {
+            //We are pointing to a destroyed object
+            SelectedCity = null;
+        }
+
+        if ( SelectedUnit != null){
             // draw a path
             DrawPath( (hexPath != null) ? hexPath : SelectedUnit.GetHexPath()   );
         }

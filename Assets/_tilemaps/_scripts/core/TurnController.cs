@@ -19,8 +19,8 @@ public class TurnController : MonoBehaviour {
             ), GameManager.LogLevel_Notice, GameManager.instance.debug,
             GameManager.instance.LogLevel );
 
-        Unit[] units = hexMap.Units;
-        City[] cities = hexMap.Cities;
+        Unit[] units = hexMap.CurrentPlayer.Units;
+        City[] cities = hexMap.CurrentPlayer.Cities;
 
         // First check to see if there are any units that have enqueued moves, if so process them.
 
@@ -48,6 +48,7 @@ public class TurnController : MonoBehaviour {
 
 
         //Goto next player
+        hexMap.AdvanceToNextPlayer();    
 
         //End 
     }

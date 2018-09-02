@@ -95,16 +95,22 @@ public int Strenght = 8;
         return hexPath != null && MovementRemaining > 0;
     }
 
-    override public void SetHex(Hex newHex) {
+    override public void SetHex( Hex newHex ) {
 
-        if (Hex != null)
-        {
-            newHex.RemoveUnit(this);
+        if ( Hex != null ) {
+            newHex.RemoveUnit( this );
         }
 
-        base.SetHex(newHex);
+        base.SetHex( newHex );
 
-        Hex.AddUnit(this);
+        Hex.AddUnit( this );
+    }
+
+    override public void Destroy(  ) {
+
+        Hex.RemoveUnit( this );
+        base.Destroy( );
+
     }
 
     public int MovementCostToEnterHex( Hex hex) {
