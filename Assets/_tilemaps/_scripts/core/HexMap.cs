@@ -88,6 +88,11 @@ public class HexMap : MonoBehaviour, IQPathWorld {
     }
 
     public void EndTurn() {
+        Util.WriteDebugLog(
+            string.Format("HexMap::EndTurn"
+            ), GameManager.LogLevel_Notice, GameManager.instance.debug,
+            GameManager.instance.LogLevel);
+
         // First check to see if there are any units that have enqueued moves, if so process them.
 
         //Now are any units waiting for orders? if so halt end turn()
@@ -98,6 +103,13 @@ public class HexMap : MonoBehaviour, IQPathWorld {
         foreach (Unit u in units) {
             u.RefreshMovement();
         }
+
+        //Loop through cities
+        //foreach (Unit u in units) {
+        //    u.RefreshMovement();
+        //}
+
+
 
 
         //Goto next player
@@ -389,7 +401,6 @@ public class HexMap : MonoBehaviour, IQPathWorld {
         }
 
         GameObject cityGo = GameObject.Instantiate(prefab, myHexGO.transform.position, Quaternion.identity, myHexGO.transform);
-
 
         cities.Add(city);
         cityToGameObjectMap.Add(city, cityGo);

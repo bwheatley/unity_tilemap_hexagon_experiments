@@ -14,6 +14,11 @@ public class City : MapObject
 
         }
 
+        private BuildingJob buildingJob;
+
+        private float productionPerTurn = 9001;
+
+
         override public void SetHex(Hex newHex)
         {
 
@@ -29,4 +34,29 @@ public class City : MapObject
         }
 
 
-}
+        public void DoTurn() {
+            if (buildingJob != null) {
+                buildingJob.DoWork(productionPerTurn);
+            }
+        }
+
+        void EXAMPLE() {
+
+            buildingJob = new BuildingJob(null,
+                "Dwarf Warrior",
+                100,
+                0,
+                () =>
+                {
+                    this.Hex.HexMap.SpawnUnitAt(
+                        new Unit(),
+                        new GameObject(),
+                        this.Hex.Q,
+                        this.Hex.R
+                    );
+                },
+                null
+
+            );
+        }
+    }

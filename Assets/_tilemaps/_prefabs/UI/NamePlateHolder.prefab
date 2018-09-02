@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222438913409924234}
   - component: {fileID: 114863872258467682}
   - component: {fileID: 114165808036668896}
+  - component: {fileID: 114141358274546176}
   m_Layer: 5
   m_Name: CityNamePlate
   m_TagString: Untagged
@@ -175,6 +176,17 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &114141358274546176
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1455593487954154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 896f75cf009e9c84db0c444859002657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114165808036668896
 MonoBehaviour:
   m_ObjectHideFlags: 1

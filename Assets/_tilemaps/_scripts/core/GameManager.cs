@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour {
 
     //UI START
     public GameObject uiUnitSelectionPanel;
+    public GameObject uiCitySelectionPanel;
 
     //UI END
 

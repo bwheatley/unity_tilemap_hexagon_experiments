@@ -27,6 +27,7 @@ public class CityNameplateController : MonoBehaviour {
 
         GameObject nameGO = (GameObject) Instantiate(CityNameplatePrefab, this.transform);
         nameGO.GetComponent<MapObjectNamePlate>().MyTarget = cityGO;
+        nameGO.GetComponentInChildren<CityNameplate>().MyCity = city;
 
     }
 

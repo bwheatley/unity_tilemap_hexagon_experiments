@@ -24,13 +24,32 @@ public class MouseController : MonoBehaviour {
 
     //Unit Movement
     private Unit __selectedUnit = null;
-
     public Unit SelectedUnit {
         get { return __selectedUnit; }
         set
         {
+            if (SelectedCity != null) {
+                SelectedCity = null;
+            }
+
             __selectedUnit = value;
             GameManager.instance.uiUnitSelectionPanel.SetActive(__selectedUnit != null);
+        }
+    }
+
+    private City __selectedCity = null;
+    public City SelectedCity {
+        get { return __selectedCity; }
+        set
+        {
+            if (SelectedUnit != null) {
+                SelectedUnit = null;
+            }
+
+            __selectedCity = value;
+            CancelUpdateFunc();
+            GameManager.instance.uiCitySelectionPanel.SetActive(__selectedCity != null);       
+            Update_CurrentFunc = Update_CityView;
         }
     }
 
@@ -264,5 +283,12 @@ public class MouseController : MonoBehaviour {
         LastMouseGroundPlanePosition = MouseToGroundPlane();
 
     }
+
+    void Update_CityView() {
+        //Can you still click on a unit you see during city view?
+        Update_DetectModeStart();
+    }
+
+
 
 }
