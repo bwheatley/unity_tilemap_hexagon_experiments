@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CameraController;
+using UnityEngine.EventSystems;
 
 public class CameraManager : CameraController.CameraController {
 
@@ -10,6 +11,15 @@ public class CameraManager : CameraController.CameraController {
     public override void Update()
     {
         base.Update();
+
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            //MouseCameraControl = false;
+            //TODO do we want to ignore all gui objects? unit health bars, resource icons, etc
+            //Although if those are set to noninteractive or not block raycasts, maybe this will return false anyway
+            return;
+        }
+        
+
 
         var rotation = new Vector3();
         if (topdown) {
