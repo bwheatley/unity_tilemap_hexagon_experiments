@@ -39,7 +39,12 @@ public class BuildingJob {
     public delegate float ProductionBonusDelegate();
     public ProductionBonusDelegate ProductionBonusFunc;
 
-    public void DoWork(float rawProduction) {
+    /// <summary>
+    /// Does the work
+    /// </summary>
+    /// <returns>Number of hammers remaining or negative for complete/overflow</returns>
+    /// <param name="rawProduction">Raw production.</param>
+    public float DoWork(float rawProduction) {
         if (ProductionBonusFunc != null) {
             rawProduction *= ProductionBonusFunc();
         }
@@ -50,7 +55,8 @@ public class BuildingJob {
             OnProductionComplete();
         }
 
-        //TODO: report overflow
+        return totalProductionNeeded - productionDone;
+
 
     }
 

@@ -6,6 +6,7 @@ using CameraController;
 using CameraController.Util;
 using QPath;
 using TMPro;
+using System.Linq;
 
 public class HexMap : MonoBehaviour, IQPathWorld {
 
@@ -50,13 +51,36 @@ public class HexMap : MonoBehaviour, IQPathWorld {
     Dictionary<Hex, GameObject> hexToGameObjectMap;
     Dictionary<GameObject, Hex> gameObjectToHexMap;
 
+    Player[] Players;
+    private Player _CurrentPlayer;
+    public Player CurrentPlayer {
+        get {
+            return _CurrentPlayer;
+        }
+
+        set {
+            _CurrentPlayer = value;
+        }
+    }
+
 
     //TODO: seperate unit list for each player
     private HashSet<Unit> units;
     Dictionary<Unit, GameObject> unitToGameObjectMap;
+    public Unit[] Units {
+        get {
+            return units.ToArray();
+            }
+        } 
 
     private HashSet<City> cities;
     Dictionary<City, GameObject> cityToGameObjectMap;
+    public City[] Cities {
+        get {
+            return cities.ToArray();
+        }
+    }
+
 
     public bool AllowWrapEastWest = true;
 
@@ -85,36 +109,6 @@ public class HexMap : MonoBehaviour, IQPathWorld {
                 }
             }
         }
-    }
-
-    public void EndTurn() {
-        Util.WriteDebugLog(
-            string.Format("HexMap::EndTurn"
-            ), GameManager.LogLevel_Notice, GameManager.instance.debug,
-            GameManager.instance.LogLevel);
-
-        // First check to see if there are any units that have enqueued moves, if so process them.
-
-        //Now are any units waiting for orders? if so halt end turn()
-
-        //heal resting units
-
-        //Reset unit movement
-        foreach (Unit u in units) {
-            u.RefreshMovement();
-        }
-
-        //Loop through cities
-        //foreach (Unit u in units) {
-        //    u.RefreshMovement();
-        //}
-
-
-
-
-        //Goto next player
-
-        //End 
     }
 
     IEnumerator DoAllUnitMoves() {
@@ -269,6 +263,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
                 Hex h = hexes[column, row];
                 GameObject hexGO = hexToGameObjectMap[h];
 
+                HexComponent hexComp = hexGO.GetComponentInChildren<HexComponent>();
                 MeshRenderer mr = hexGO.GetComponentInChildren<MeshRenderer>();
                 MeshFilter mf = hexGO.GetComponentInChildren<MeshFilter>();
 
@@ -327,6 +322,7 @@ public class HexMap : MonoBehaviour, IQPathWorld {
                 {
                     mf.mesh = MeshHill;
                     h.ElevationType = Hex.ELEVATION_TYPE.HILL;
+                    hexComp.VerticalOffset = 0.25f;
 
                     Vector3 p = hexGO.transform.position;
                     if (h.Elevation >= HeightHill)

@@ -11,13 +11,21 @@ public class UnitView : MonoBehaviour {
     private HexMap hexMap;
 
     public void OnObjectMoved(Hex oldHex, Hex newHex) {
+    
+        //TODO: use raycasting to determine where a unit's heights should be and remove VerticalOffset from hexmap
 
         //Animate the unit moving from oldHex to newHex
-        this.transform.position = oldHex.PositionFromCamera();
+        Vector3 oldPosition = oldHex.PositionFromCamera();
         newPosition = newHex.PositionFromCamera();
         currentVelocity = Vector3.zero;
 
-        if (Vector3.Distance(this.transform.position, newPosition) > 2) {
+        //TODO: newposition.y component needs to be set from HexComponent's verticaloffset
+        oldPosition.y += oldHex.HexMap.GetHexGO( oldHex ).GetComponent<HexComponent>().VerticalOffset;
+        newPosition.y += newHex.HexMap.GetHexGO( newHex ).GetComponent<HexComponent>().VerticalOffset;
+
+        this.transform.position = oldPosition;
+
+        if ( Vector3.Distance(this.transform.position, newPosition) > 2) {
             //This is a cross map move. Teleport! 
             this.transform.position = newPosition;
         }
